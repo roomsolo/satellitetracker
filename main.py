@@ -1,6 +1,7 @@
 from skyfield.api import load, EarthSatellite, wgs84
 import requests
 import geocoder
+satname = input("Enter SATELLITE NAME (e.g., ISS (ZARYA), all caps when you spell the man name): ")
 ip = geocoder.ip('me')
 ts = load.timescale()
 t = ts.now()
@@ -10,7 +11,7 @@ def get_iss_tle():
     lines = response.text.splitlines()
 
     for i in range(len(lines)):
-        if "ISS (ZARYA)" in lines[i]:
+        if satname.upper() in lines[i]:
             name = lines[i]
             line1 = lines[i + 1]
             line2 = lines[i + 2]
@@ -29,7 +30,7 @@ observer = wgs84.latlon(
 difference = sat - observer
 topocentric = difference.at(t)
 alt, az, distance = topocentric.altaz()
-
+print("YOUR ESTIMATED LOCATION:", ip.latlng)
 if alt.degrees > 0:
     print("SATELLITE IS VISIBLE TO EYE")
 else:
